@@ -18,7 +18,16 @@ angular
     $stateProvider
       .state('home', {
         url: '/',
-        templateUrl: 'home/home.html'
+        templateUrl: 'home/home.html',
+          resolve: {
+              requireNoAuth: function($state, Auth){
+                  return Auth.$requireAuth().then(function(auth){
+                      $state.go('hello');
+                  }, function(error){
+                      return;
+                  });
+              }
+          }
       })
       .state('login', {
         url: '/login',
@@ -73,12 +82,20 @@ angular
           resolve: {
               auth: function($state, Users, Auth){
                   return Auth.$requireAuth().catch(function(){
-                      $state.go('home');
+                      $state.go('hello');
                   });
               },
-              profile: function(Users, Auth){
+              profile: function ($state, Auth, Users){
                   return Auth.$requireAuth().then(function(auth){
-                      return Users.getProfile(auth.uid).$loaded();
+                      return Users.getProfile(auth.uid).$loaded().then(function (profile){
+                          if(profile.displayName){
+                              return profile;
+                          } else {
+                              $state.go('profile');
+                          }
+                      });
+                  }, function(error){
+                      $state.go('home');
                   });
               }
           }

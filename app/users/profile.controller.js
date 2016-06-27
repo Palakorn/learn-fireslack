@@ -1,5 +1,5 @@
 angular.module('angularfireSlackApp')
-    .controller('ProfileCtrl', function($state, md5, auth, profile){
+    .controller('ProfileCtrl', function($state, md5, Auth, auth, profile){
         var profileCtrl = this;
 
         profileCtrl.profile = profile;
@@ -9,6 +9,14 @@ angular.module('angularfireSlackApp')
             profileCtrl.profile.$save().then(function() {
                 $state.go('hello');
             })
+        };
+
+        profileCtrl.logout = function(){
+            profileCtrl.profile.online = null;
+            profileCtrl.profile.$save().then(function(){
+                Auth.$unauth();
+                $state.go('home');
+            });
         };
 
     });

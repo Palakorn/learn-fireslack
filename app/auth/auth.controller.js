@@ -23,4 +23,13 @@ angular.module('angularfireSlackApp')
             });
         };
 
+        authCtrl.fbLogin = function () {
+            Auth.$authWithOAuthRedirect("facebook", function (error, authData) {},
+                {
+                    remember: "none",
+                    scope: "email, user_likes"
+                }
+            );
+        };
+
     });

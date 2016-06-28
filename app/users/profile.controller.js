@@ -7,16 +7,10 @@ angular.module('angularfireSlackApp')
         profileCtrl.updateProfile = function(){
             profileCtrl.profile.emailHash = md5.createHash(auth.password.email);
             profileCtrl.profile.$save().then(function() {
-                $state.go('hello');
+                $state.go('display');
             })
         };
 
-        profileCtrl.logout = function(){
-            profileCtrl.profile.online = null;
-            profileCtrl.profile.$save().then(function(){
-                Auth.$unauth();
-                $state.go('home');
-            });
-        };
+
 
     });

@@ -22,7 +22,7 @@ angular
           resolve: {
               requireNoAuth: function($state, Auth){
                   return Auth.$requireAuth().then(function(auth){
-                      $state.go('hello');
+                      $state.go('display');
                   }, function(error){
                       return;
                   });
@@ -36,7 +36,7 @@ angular
           resolve: {
               requireNoAuth: function($state, Auth){
                   return Auth.$requireAuth().then(function(auth){
-                      $state.go('hello');
+                      $state.go('profile');
                   }, function(error){
                       return;
                   });
@@ -50,7 +50,7 @@ angular
           resolve: {
               requireNoAuth: function($state, Auth){
                   return Auth.$requireAuth().then(function(auth){
-                      $state.go('hello');
+                      $state.go('profile');
                   }, function(error){
                       return;
                   });
@@ -75,31 +75,32 @@ angular
           }
 
       })
-      .state('hello', {
-          url: '/hello',
-          controller: 'ProfileCtrl as profileCtrl',
-          templateUrl: 'users/hello.html',
-          resolve: {
-              auth: function($state, Users, Auth){
-                  return Auth.$requireAuth().catch(function(){
-                      $state.go('hello');
-                  });
-              },
-              profile: function ($state, Auth, Users){
-                  return Auth.$requireAuth().then(function(auth){
-                      return Users.getProfile(auth.uid).$loaded().then(function (profile){
-                          if(profile.displayName){
-                              return profile;
-                          } else {
-                              $state.go('profile');
-                          }
-                      });
-                  }, function(error){
-                      $state.go('home');
-                  });
-              }
-          }
-      });
+
+        .state('display', {
+            url: '/display',
+            controller: 'DisplayCtrl as displayCtrl',
+            templateUrl: 'display/display.html',
+            resolve:{
+                auth: function($state, Users, Auth){
+                    return Auth.$requireAuth().catch(function(){
+                        $state.go('home');
+                    });
+                },
+                profile: function ($state, Auth, Users){
+                    return Auth.$requireAuth().then(function(auth){
+                        return Users.getProfile(auth.uid).$loaded().then(function (profile){
+                            if(profile.displayName){
+                                return profile;
+                            } else {
+                                $state.go('profile');
+                            }
+                        });
+                    }, function(error){
+                        $state.go('home');
+                    });
+                }
+            }
+        });
 
     $urlRouterProvider.otherwise('/');
   })
